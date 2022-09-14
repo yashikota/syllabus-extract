@@ -57,7 +57,7 @@ class Scraper:
             # 件数を取得
             number = int(re.search(r"(\d+)件中", text).group(1))
             print(f"{department(value)}: {str(number)}件")
-            self.total += int(number)
+            self.total += number
 
             for i in range(number // page_size + 1):
                 time.sleep(sleep_time)
