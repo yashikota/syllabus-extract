@@ -17,7 +17,7 @@ def normalize(enter: str) -> str:
 
 
 def values() -> list:
-    with open("data/official.json", "r") as f:
+    with open("data/department.json", "r") as f:
         return list(json.load(f).keys())
 
 

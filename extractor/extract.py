@@ -4,7 +4,7 @@ import time
 
 import pandas as pd
 from bs4 import BeautifulSoup
-from playwright.async_api import Playwright, async_playwright, expect
+from playwright.async_api import Playwright, async_playwright
 
 from extractor.utility import (department, dow, normalize, output, period, url,
                                values)
