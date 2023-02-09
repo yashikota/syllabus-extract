@@ -6,8 +6,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from playwright.async_api import Playwright, async_playwright
 
-from extractor.utility import (department, dow, normalize, output, period, url,
-                               values)
+from . import utility
 
 
 class Scraper:
@@ -17,23 +16,24 @@ class Scraper:
         self.result = list()
 
     async def _get(self, playwright: Playwright, value: str) -> None:
+        url = "https://www.portal.oit.ac.jp/CAMJWEB/slbssrch.do"
         dropdown = "select[name='value(crclm)']"
         search_button = "#srch_skgr_search"
         no_result_mark = "font[color='red']"
         next_page = "a:has-text('次の50件>>')"
         text = ""
-
-        sleep_time = 10
+        video_dir_path = "video/"
+        sleep_time = 5
         page_size = 50
 
         # ブラウザの起動
         browser = await playwright.chromium.launch(headless=True)
-        context = await browser.new_context()
+        context = await browser.new_context(record_video_dir=video_dir_path)
 
         try:
             # 検索ページを開く
             page = await context.new_page()
-            await page.goto("https://www.portal.oit.ac.jp/CAMJWEB/slbssrch.do")
+            await page.goto(url)
             await page.select_option(dropdown, value)
 
             # 検索ボタンをクリック
@@ -47,7 +47,7 @@ class Scraper:
         else:
             # 検索結果がない場合
             if await page.query_selector(no_result_mark):
-                print(f"{department(value)}: 0件")
+                print(f"{utility.department(value)}: 0件")
                 return
 
             # 検索結果を取得
@@ -56,7 +56,7 @@ class Scraper:
 
             # 件数を取得
             number = int(re.search(r"(\d+)件中", text).group(1))
-            print(f"{department(value)}: {str(number)}件")
+            print(f"{utility.department(value)}: {str(number)}件")
             self.total += number
 
             for i in range(number // page_size + 1):
@@ -76,12 +76,13 @@ class Scraper:
                 # リストに追加
                 df_list = df.values.tolist()
                 for j in range(len(df_list)):
+                    dow, period = utility.dow_period(utility.normalize(df_list[j][1]))
                     self.result.append(
                         [
-                            department(value),
-                            url(self.year, df_list[j][0]),
-                            dow(normalize(df_list[j][1])),
-                            period(normalize(df_list[j][1])),
+                            utility.department(value),
+                            utility.url(self.year, df_list[j][0]),
+                            dow,
+                            period
                         ]
                     )
 
@@ -101,8 +102,8 @@ class Scraper:
     def main(self, year: str) -> None:
         self.year = year
 
-        for value in values():
+        for value in utility.values():
             asyncio.run(self._run(value))
-            output(year, self.result)
+            utility.output(year, self.result)
 
         print(f"合計: {self.total}件")

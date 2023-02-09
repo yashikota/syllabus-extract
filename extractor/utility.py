@@ -21,32 +21,17 @@ def values() -> list:
         return list(json.load(f).keys())
 
 
-def get_dow_period(enter: str) -> str:
-    dow_list = list()
-    period_list = list()
-
+def dow_period(enter: str) -> str:
     splitted = enter.split("@")
-    for i in range(len(splitted)):
-        try:
-            term, dow, period = splitted[i].split(" ")
-        except ValueError:
-            dow = "未掲載"
-            period = "未掲載"
-        dow_list.append(dow)
-        period_list.append(period)
 
-    return "@".join(dow_list), "@".join(period_list)
-
-
-def dow(enter: str) -> str:
-    dow_list, period_list = get_dow_period(enter)
-    return dow_list
-
-
-def period(enter: str) -> str:
-    dow_list, period_list = get_dow_period(enter)
-    return period_list
-
+    try:
+        dow = [splitted[i].split(" ")[1] for i in range(len(splitted))]
+        period = [splitted[i].split(" ")[2] for i in range(len(splitted))]
+    except IndexError:
+        dow = ["未掲載"]
+        period = ["未掲載"]
+    finally:
+        return " ".join(dow), " ".join(period)
 
 def output(year: str, enter: list) -> None:
     with open(f"data/{year}.csv", "w") as f:
