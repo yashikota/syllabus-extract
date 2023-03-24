@@ -2,7 +2,7 @@ import extractor
 
 
 def main() -> None:
-    YEAR = "2022"
+    YEAR = "2023"
 
     extractor.Scraper().main(YEAR)
 
