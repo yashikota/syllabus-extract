@@ -2,22 +2,15 @@
 name = "syllabus-extract"
 version = "0.1.0"
 description = ""
-authors = ["kota <52403688+yashikota@users.noreply.github.com>"]
+authors = ["yashikota <52403688+yashikota@users.noreply.github.com>"]
 readme = "README.md"
-packages = [{include = "syllabus_extract"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-playwright = "^1.25.2"
-pandas = "^1.4.4"
-beautifulsoup4 = "^4.11.1"
-lxml = "^4.9.1"
-html5lib = "^1.1"
+python = "^3.11"
+playwright = "^1.42.0"
+pandas = "^2.2.1"
+beautifulsoup4 = "^4.12.3"
 
-
-[tool.poetry.group.dev.dependencies]
-black = "^22.8.0"
-isort = "^5.10.1"
 
 [build-system]
 requires = ["poetry-core"]
