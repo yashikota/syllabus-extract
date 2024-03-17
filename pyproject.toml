@@ -6,10 +6,13 @@ authors = ["yashikota <52403688+yashikota@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 playwright = "^1.42.0"
 pandas = "^2.2.1"
 beautifulsoup4 = "^4.12.3"
+numpy = "^1.26.4"
+lxml = "^5.1.0"
+html5lib = "^1.1"
 
 
 [build-system]
