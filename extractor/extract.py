@@ -1,4 +1,5 @@
 import asyncio
+import math
 import re
 import time
 from io import StringIO
@@ -16,7 +17,7 @@ class Scraper:
         self.total = 0
         self.result = list()
 
-    async def _get(self, playwright: Playwright, value: str) -> None:
+    async def _get(self, playwright: Playwright, department: str) -> None:
         url = "https://www.portal.oit.ac.jp/CAMJWEB/slbssrch.do"
         dropdown = "select[name='value(crclm)']"
         search_button = "#srch_skgr_search"
@@ -35,7 +36,7 @@ class Scraper:
             # 検索ページを開く
             page = await context.new_page()
             await page.goto(url)
-            await page.select_option(dropdown, value)
+            await page.select_option(dropdown, department)
 
             # 検索ボタンをクリック
             await page.click(search_button)
@@ -48,7 +49,7 @@ class Scraper:
         else:
             # 検索結果がない場合
             if await page.query_selector(no_result_mark):
-                print(f"{utility.department(value)}: 0件")
+                print(f"{utility.department(department)}: 0件")
                 return
 
             # 検索結果を取得
@@ -57,10 +58,10 @@ class Scraper:
 
             # 件数を取得
             number = int(re.search(r"(\d+)件中", text).group(1))
-            print(f"{utility.department(value)}: {str(number)}件")
+            print(f"{utility.index(department)}: {utility.department(department)}: {str(number)}件")
             self.total += number
 
-            for i in range(number // page_size + 1):
+            for i in range(math.ceil(number / page_size)):
                 time.sleep(sleep_time)
 
                 # 検索結果からテーブルを取得
@@ -80,7 +81,7 @@ class Scraper:
                     dow, period = utility.dow_period(utility.normalize(df_list[j][1]))
                     self.result.append(
                         [
-                            utility.department(value),
+                            utility.department(department),
                             utility.url(self.year, df_list[j][0]),
                             dow,
                             period
@@ -88,7 +89,7 @@ class Scraper:
                     )
 
                 # ページが分割されており最終ページでない場合、次のページに移動
-                if number > page_size and i < number // page_size:
+                if number > page_size and i < math.ceil(number / page_size) - 1:
                     await page.click(next_page)
 
         finally:
@@ -96,15 +97,16 @@ class Scraper:
             await context.close()
             await browser.close()
 
-    async def _run(self, value) -> None:
+    async def _run(self, department) -> None:
         async with async_playwright() as playwright:
-            await self._get(playwright, value)
+            await self._get(playwright, department)
 
     def main(self, year: str) -> None:
         self.year = year
 
-        for value in utility.values():
-            asyncio.run(self._run(value))
-            utility.output(year, self.result)
+        for department in utility.departments():
+            asyncio.run(self._run(department))
+            utility.output(year, department, self.result)
+            self.result.clear()
 
         print(f"合計: {self.total}件")
