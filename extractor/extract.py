@@ -1,6 +1,7 @@
 import asyncio
 import re
 import time
+from io import StringIO
 
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -66,7 +67,7 @@ class Scraper:
                 html = (await page.content()).replace("<br>", "@")
                 soup = BeautifulSoup(html, "html.parser")
                 table = soup.find_all(class_="list")
-                df = (pd.read_html(str(table)))[0]
+                df = (pd.read_html(StringIO(str(table))))[0]
 
                 # 0行目と1行目と一番下の行を削除
                 df = df.drop([0, 1, len(df) - 1])
