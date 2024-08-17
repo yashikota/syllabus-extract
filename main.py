@@ -6,7 +6,7 @@ import extractor.utility
 
 def main() -> None:
     if not extractor.utility.is_args_year():
-        print("引数がありません。")
+        print("年度を指定してください")
         return
 
     extractor.Scraper().main(sys.argv[1])

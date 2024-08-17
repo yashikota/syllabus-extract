@@ -1,7 +1,7 @@
 import asyncio
 import math
 import re
-import time
+import traceback
 from io import StringIO
 
 import pandas as pd
@@ -25,7 +25,6 @@ class Scraper:
         next_page = "a:has-text('次の50件>>')"
         text = ""
         video_dir_path = "video/"
-        sleep_time = 5
         page_size = 50
 
         # ブラウザの起動
@@ -40,11 +39,11 @@ class Scraper:
 
             # 検索ボタンをクリック
             await page.click(search_button)
-            time.sleep(sleep_time)
+            await page.wait_for_load_state("load", timeout=60000)
 
         except Exception as e:
-            print(e)
-            return
+            print(f"Error occurred: {e}")
+            print(traceback.format_exc())
 
         else:
             # 検索結果がない場合
@@ -62,7 +61,7 @@ class Scraper:
             self.total += number
 
             for i in range(math.ceil(number / page_size)):
-                time.sleep(sleep_time)
+                await page.wait_for_load_state("load", timeout=60000)
 
                 # 検索結果からテーブルを取得
                 html = (await page.content()).replace("<br>", "@")
@@ -90,6 +89,8 @@ class Scraper:
 
                 # ページが分割されており最終ページでない場合、次のページに移動
                 if number > page_size and i < math.ceil(number / page_size) - 1:
+                    await page.wait_for_load_state("load", timeout=60000)
+                    await page.wait_for_selector(next_page)
                     await page.click(next_page)
 
         finally:

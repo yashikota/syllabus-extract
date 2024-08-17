@@ -1,6 +1,8 @@
 # syllabus-extract
 
-学科情報取得用リポジトリです。  
+```sh
+docker compose up -d
+```
 
 <!-- ## 略称対応表
 

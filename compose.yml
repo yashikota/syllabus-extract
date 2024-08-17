@@ -1,0 +1,11 @@
+services:
+  syllabus:
+    build: .
+    image: syllabus-extract
+    container_name: syllabus-extract
+    working_dir: /app
+    command: sh run.sh
+    volumes:
+      - .:/app
+    environment:
+      - TZ=Asia/Tokyo
