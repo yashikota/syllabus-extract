@@ -1,7 +1,5 @@
 # syllabus-extract
 
-## docker
-
 ```sh
 YEAR={YEAR} docker compose up
 ```
