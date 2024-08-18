@@ -1,0 +1,32 @@
+name: syllabus-extract
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'Year to extract syllabus for'
+        required: true
+        type: number
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run
+        uses: YEAR=${{ github.event.inputs.year }} docker compose up
+
+      - name: Commit
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Extract syllabus for ${{ github.event.inputs.year }}"
+
+      - name: Push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin master

@@ -1,4 +1,9 @@
-YEAR=2024
+#!/bin/sh
+
+if [ -z "$YEAR" ]; then
+  echo "年度を指定してください"
+  exit 1
+fi
 
 rm -rf video/
 mkdir video

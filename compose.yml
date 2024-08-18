@@ -9,3 +9,4 @@ services:
       - .:/app
     environment:
       - TZ=Asia/Tokyo
+      - YEAR=${YEAR}
