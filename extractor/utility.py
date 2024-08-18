@@ -1,20 +1,11 @@
 import csv
 import json
 import os
-import sys
 import unicodedata
 
 
 def url(year: str, numbering: str) -> str:
     return f"https://www.portal.oit.ac.jp/CAMJWEB/slbssbdr.do?value(risyunen)={year}&value(semekikn)=1&value(kougicd)={numbering}&value(crclumcd)=10201200"
-
-
-def is_args_year() -> bool:
-    return len(sys.argv) > 1
-
-
-def is_args_resume() -> bool:
-    return len(sys.argv) > 2
 
 
 def department(value: str) -> str:
@@ -24,8 +15,7 @@ def department(value: str) -> str:
 
 def departments() -> list:
     with open("data/department.json", "r") as f:
-        data = list(json.load(f).keys())
-        return data[int(sys.argv[2]):] if is_args_resume() else data
+        return list(json.load(f).keys())
 
 
 def index(department: str) -> int:
@@ -49,9 +39,8 @@ def dow_period(enter: str) -> str:
     finally:
         return " ".join(dow), " ".join(period)
 
-def output(year: str, department: str, enter: list) -> None:
-    os.makedirs(f"data/{year}", exist_ok=True)
 
-    with open(f"data/{year}/{department}.csv", "w") as f:
+def output(year: str, enter: list) -> None:
+    with open(f"data/{year}.csv", "w") as f:
         writer = csv.writer(f)
         writer.writerows(enter)

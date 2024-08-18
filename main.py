@@ -4,8 +4,8 @@ import extractor
 import extractor.utility
 
 
-def main() -> None:
-    if not extractor.utility.is_args_year():
+def main():
+    if len(sys.argv) != 2:
         print("年度を指定してください")
         return
 
