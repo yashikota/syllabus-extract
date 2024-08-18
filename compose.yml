@@ -4,7 +4,7 @@ services:
     image: syllabus-extract
     container_name: syllabus-extract
     working_dir: /app
-    command: sh run.sh
+    command: python3 main.py
     volumes:
       - .:/app
     environment:

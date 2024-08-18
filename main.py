@@ -1,15 +1,16 @@
-import sys
+import os
 
 import extractor
 import extractor.utility
 
 
 def main():
-    if len(sys.argv) != 2:
+    year: str = os.getenv("YEAR")
+    if year == "":
         print("年度を指定してください")
         return
 
-    extractor.Scraper().main(sys.argv[1])
+    extractor.Scraper().main(year)
 
 
 if __name__ == "__main__":
